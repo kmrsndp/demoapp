@@ -10,36 +10,37 @@ import java.io.IOException;
 import java.util.Properties;
 
 public class BaseTest {
-
-    public WebDriver driver;
+    private WebDriver driver;
+    Properties prop = new Properties();
 
     public WebDriver webDriverManager() {
+        if (driver == null) {
+            loadProperties();
+            initializeDriver();
+        }
+        return driver;
+    }
 
-        FileInputStream fis;
-        Properties prop = new Properties();
-        try {
-            fis = new FileInputStream("src/test/resources/global.properties");
+    private void loadProperties() {
+        try (FileInputStream fis = new FileInputStream("src/test/resources/global.properties")) {
             prop.load(fis);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
 
+    private void initializeDriver() {
+        String browser = prop.getProperty("browser");
         String url = prop.getProperty("qa_url");
 
-        if (driver == null) {
-
-            if(prop.getProperty("browser").equalsIgnoreCase("chrome")){
-                System.setProperty("webdriver.chrome.driver", "src/test/java/chromedriver.exe");
-                ChromeOptions options = new ChromeOptions();
-                options.addArguments("--remote-allow-origins=*");
-                driver = new ChromeDriver(options);
-                driver.get(url);
-            }else if (prop.getProperty("browser").equals("edge")){
-//                System.setProperty("webdriver.edge.driver", "src/test/java/chromedriver.exe");
-            }
-
+        if (browser.equalsIgnoreCase("chrome")) {
+            System.setProperty("webdriver.chrome.driver", "src/test/java/chromedriver.exe");
+            ChromeOptions options = new ChromeOptions();
+            options.addArguments("--remote-allow-origins=*");
+            driver = new ChromeDriver(options);
+            driver.get(url);
+        } else if (browser.equalsIgnoreCase("edge")) {
+            // System.setProperty("webdriver.edge.driver", "src/test/java/chromedriver.exe");
         }
-
-        return driver;
     }
 }

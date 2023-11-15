@@ -4,8 +4,8 @@ import org.openqa.selenium.WebDriver;
 
 public class PageObjectManager {
 
-    public SauceDemo sauceDemo;
-    public ProductPage productPage;
+    private SauceDemo sauceDemo;
+    private ProductPage productPage;
     public WebDriver driver;
 
     public PageObjectManager(WebDriver driver){
